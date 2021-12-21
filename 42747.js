@@ -1,5 +1,4 @@
 function right(h, citations) {
-  let sol = 0;
   let count = 0;
   for (let x of citations) {
     if (x >= h) {
@@ -9,12 +8,6 @@ function right(h, citations) {
   if (count < h) {
     return false;
   }
-  for (let x of citations) {
-    if (x < h && count < x) {
-      return false;
-    }
-  }
-
   return true;
 }
 
@@ -29,7 +22,6 @@ function solution(citations) {
     }
     el += 1;
     max_c -= 1;
-    // console.log("el:", el, "h:", h);
   }
 
   return h;
