@@ -1,19 +1,22 @@
 function rotate(arr, top, bottom, left, right) {
-  let arr_new = arr;
-  for (let step = bottom - 1; step >= top; step--) {
+  let arr_new = arr.map((v) => v.slice());
+  let step;
+  for (step = bottom - 1; step >= top; step--) {
     arr_new[step][left] = arr[step + 1][left];
   }
-  console.log(arr_new[2][left]);
-  for (let step = left + 1; step <= right; step++) {
-    arr_new[top][step] = arr[top][step + 1];
+
+  for (step = left + 1; step <= right; step++) {
+    arr_new[top][step] = arr[top][step - 1];
   }
 
-  for (let step = top + 1; step <= bottom; step++) {
+  for (step = top + 1; step <= bottom; step++) {
     arr_new[step][right] = arr[step - 1][right];
   }
-  for (let step = right - 1; step >= left; step--) {
-    arr_new[bottom][step] = arr[bottom][step - 1];
+
+  for (step = right - 1; step >= left; step--) {
+    arr_new[bottom][step] = arr[bottom][step + 1];
   }
+  return arr_new;
 }
 
 function mk_arr(rows, columns) {
@@ -24,13 +27,14 @@ function mk_arr(rows, columns) {
     let j = 1;
     in_arr = [];
     while (j <= columns) {
-      in_arr.push(6 * (i - 1) + j);
+      in_arr.push(rows * (i - 1) + j);
       j += 1;
     }
     arr.push(in_arr);
     i += 1;
     in_arr = [];
   }
+
   return arr;
 }
 function get_smalls(arr, i) {
@@ -53,22 +57,25 @@ function get_smalls(arr, i) {
   );
   const small = Math.min(...ret);
   let new_arr = rotate(arr, top, bottom, left, right);
-  return small, new_arr;
+  return [small, new_arr];
 }
 
 function solution(rows, columns, queries) {
   let arr = mk_arr(rows, columns);
-  smalls = [];
-  for (i of queries) {
-    smalls.push(get_smalls(arr, i));
+  let smalls = [];
+  for (let i of queries) {
+    let ret = get_smalls(arr, i);
+    smalls.push(ret[0]);
+    arr = get_smalls(arr, i)[1];
   }
+
   return smalls;
 }
-
 console.log(
-  solution(6, 6, [
-    [2, 2, 5, 4],
-    [3, 3, 6, 6],
-    [5, 1, 6, 3],
+  solution(3, 3, [
+    [1, 1, 2, 2],
+    [1, 2, 2, 3],
+    [2, 1, 3, 2],
+    [2, 2, 3, 3],
   ])
 );
