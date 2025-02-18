@@ -21,6 +21,7 @@ function solution(info, n, m) {
       for (let k = 0; k < m; k++) {
         //b에 대해서
         if (dp[j][k] == false) {
+          //더이상 갈 수 없다.
           continue;
           //i까지 끝까지 돌면서! 덮어쓰기 함.
         }
@@ -110,6 +111,5 @@ console.log(
 //   6,
 //   1
 // );
-
 
 //dp는 순서가 어느정도 있다.
