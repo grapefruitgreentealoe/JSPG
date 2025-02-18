@@ -1,10 +1,9 @@
 function solution(info, n, m) {
-  var answer = 0;
+  var answer = -1;
   //n * m의 배열을 만든다.
   //최대의 경우에 수에 대한 2차원 배열을 만든다.
-  const dp = Array.from(Array(n), () => new Array(m).fill(false));
-  console.log(dp);
-  dp[0][0] = true; //시작은 해야하니
+  let dp = Array.from({ length: n }, () => Array(m).fill(false));
+  dp[0][0] = true;
 
   // 작은 부분 문제부터 차례대로 해결한다. ?
   // a도둑이 적게 훔쳐야하므로 최대한 b도둑이 훔쳐야한다.
@@ -14,11 +13,47 @@ function solution(info, n, m) {
   // but dfs의 경우에는 어제 끝날 지 모른다.
   // 그리고 그 다음 선택지가 정해져있지 않아서 깊은 탐색을 하는것
 
-  //점화식
+  //점화식 = 이전값에다가 현재의 info값을 더해서 누적값을 저장한다.
   for (let i = 0; i < info.length; i++) {
-    //물건 결과 저장 dp배열 생성
-    console.log(i);
-    const nextDp = new Array(n).fill(Array(m).fill(false));
+    let nextDp = Array.from({ length: n }, () => Array(m).fill(false));
+    for (let j = 0; j < n; j++) {
+      //a에 대해서
+      for (let k = 0; k < m; k++) {
+        //b에 대해서
+        if (dp[j][k] == false) {
+          continue;
+          //i까지 끝까지 돌면서! 덮어쓰기 함.
+        }
+
+        // a가 i를 훔치는 경우
+        let nextA = j + info[i][0];
+        let nextB = k;
+        if (nextA < n) {
+          nextDp[nextA][nextB] = true;
+        }
+
+        nextA = j;
+        nextB = k + info[i][1];
+        if (nextB < m) {
+          nextDp[nextA][nextB] = true;
+        }
+      }
+    }
+    dp = nextDp; //결과값을 담아준다.
+    //이렇게 하면? 마지막까지 갈 수 있는 경우에만 true로 남게된다.(덮어쓰기)
+  }
+
+  // 근데 i까지 다 돌았는지는 어떻게 알지
+  for (let sumA = 0; sumA < n; sumA++) {
+    for (let sumB = 0; sumB < m; sumB++) {
+      //만약에 끝까지. 다 돌았을때
+      //true값이 있다면 answer에 넣는다.
+      //A값이 오름차순으로 증가하면서 그 안에서 B가 먼저 돌기때문에, A의 결과가 최소인 경우의 A값을 담을 수 있다.
+      if (dp[sumA][sumB]) {
+        answer = sumA;
+      }
+    }
+    if (answer !== -1) break;
   }
 
   return answer;
@@ -33,14 +68,16 @@ function solution(info, n, m) {
  */
 
 //2
-solution(
-  [
-    [1, 2],
-    [2, 3],
-    [2, 1],
-  ],
-  4,
-  4
+console.log(
+  solution(
+    [
+      [1, 2],
+      [2, 3],
+      [2, 1],
+    ],
+    4,
+    4
+  )
 );
 
 // //0
@@ -73,3 +110,6 @@ solution(
 //   6,
 //   1
 // );
+
+
+//dp는 순서가 어느정도 있다.
